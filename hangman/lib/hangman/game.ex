@@ -19,37 +19,54 @@ defmodule Hangman.Game do
   end
 
   def make_move(game, guess) do
-    accept_move(game, guess, MapSet.member?(game.used, guess))
+    accept_move(game, guess, guess in game.used)
   end
 
   defp accept_move(game, _guess, _already_guessed = true) do
     Map.put(game, :state, :already_used)
   end
 
-  defp accept_move(game, guess, _already_guessed) do
+  defp accept_move(game, guess, _new_letter_guess) do
     Map.put(game, :used, MapSet.put(game.used, guess))
-    |> good_guess?(guess in game.letters)
+    |> score_guess?(guess in game.letters)
   end
 
-  defp good_guess?(game, true) do
+  defp score_guess?(game, _good_guess = true) do
     game_won?(game, MapSet.subset?(MapSet.new(game.letters), game.used))
   end
 
-  defp good_guess?(game, false) do
-    game
+  defp score_guess?(game = %{turns_left: 1}, _good_guess = false) do
+    Map.put(game, :state, :lost)
   end
 
-  defp game_won?(game, true) do
+  defp score_guess?(game, _good_guess = false) do
+    %{game |
+      state: :bad_guess,
+      turns_left: game.turns_left - 1
+    }
+  end
+
+  defp game_won?(game, _game_won = true) do
     Map.put(game, :state, :won)
   end
 
-  defp game_won?(game, _) do
+  defp game_won?(game, _game_not_won) do
     Map.put(game, :state, :good_guess)
   end
 
-
-  def tally(_game)  do
-    123
+  def tally(game)  do
+    %{
+      game_state: game.state,
+      turns_left: game.turns_left,
+      letters: game.used |> reveal_letters(game.letters)
+    }
   end
+
+  defp reveal_letters(guessed, game_letters) do
+    Enum.map(game_letters, &(reveal_letter(&1, &1 in guessed)))
+  end
+
+  defp reveal_letter(game_letter, _guessed = true), do: game_letter
+  defp reveal_letter(_game_letter, _not_guessed), do: "_"
 
 end
