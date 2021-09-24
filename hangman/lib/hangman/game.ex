@@ -15,7 +15,7 @@ defmodule Hangman.Game do
   end
 
   def make_move(game = %Hangman.Game{state: state}, _guess) when state in [:won, :lost] do
-    {game, tally(game)}
+    game
   end
 
   def make_move(game, guess) do
