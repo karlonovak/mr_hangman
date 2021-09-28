@@ -9,8 +9,7 @@ defmodule GameTest do
     assert game.turns_left == 7
     assert length(game.letters) > 0
 
-    assert game.letters |> List.to_string() |> String.downcase() ==
-             game.letters |> List.to_string()
+    assert game.letters |> List.to_string() |> String.downcase() == game.letters |> List.to_string()
   end
 
   test "game state is unchanged on making a move if game is :won or :lost" do
@@ -23,16 +22,16 @@ defmodule GameTest do
   test "already guessed check" do
     game = Game.new_game()
 
-    game = Game.make_move(game, "x")
+    {game, _} = Game.make_move(game, "x")
     assert game.state != :already_used
 
-    game = Game.make_move(game, "x")
+    {game, _} = Game.make_move(game, "x")
     assert game.state == :already_used
   end
 
   test "good guess" do
     game = Game.new_game("doodle")
-    game = Game.make_move(game, "d")
+    {game, _} = Game.make_move(game, "d")
     assert game.state == :good_guess
   end
 
@@ -47,7 +46,7 @@ defmodule GameTest do
     game = Game.new_game("doodle")
 
     Enum.reduce(moves, game, fn({guess, state}, game) ->
-      game = Game.make_move(game, guess)
+      {game, _} = Game.make_move(game, guess)
       assert game.state == state
       game
     end)
@@ -55,7 +54,7 @@ defmodule GameTest do
 
   test "bad guess detection" do
     game = Game.new_game("doodle")
-    game = Game.make_move(game, "x")
+    {game, _} = Game.make_move(game, "x")
     assert game.state == :bad_guess
     assert game.turns_left == 6
   end
@@ -74,7 +73,7 @@ defmodule GameTest do
     game = Game.new_game("x")
 
     Enum.reduce(moves, game, fn({guess, state, turns_left}, game) ->
-      game = Game.make_move(game, guess)
+      {game, _} = Game.make_move(game, guess)
       assert game.state == state
       assert game.turns_left == turns_left
       game

@@ -1,9 +1,10 @@
 defmodule Dictionary.WordList do
+  use Agent
 
   @me __MODULE__
 
-  def start_link() do
-    Agent.start(&word_list/0,name: @me)
+  def start_link(_) do
+    Agent.start_link(&word_list/0,name: @me)
   end
 
   def word_list() do

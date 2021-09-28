@@ -1,4 +1,4 @@
-defmodule Dictionary.Application do
+defmodule Hangman.Application do
 
   use Application
 
@@ -6,12 +6,12 @@ defmodule Dictionary.Application do
     import Supervisor.Spec, warn: false
 
     options = [
-      name:     Dictionary.Supervisor,
-      strategy: :one_for_one,
+      name:     Hangmans.Supervisor,
+      strategy: :simple_one_for_one,
     ]
 
     children = [
-      {Dictionary.WordList, %{}}
+      {Hangman.Server, %{}}
     ]
 
     Supervisor.start_link(children, options)

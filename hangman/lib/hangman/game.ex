@@ -16,10 +16,12 @@ defmodule Hangman.Game do
 
   def make_move(game = %Hangman.Game{state: state}, _guess) when state in [:won, :lost] do
     game
+    |> return_with_tally()
   end
 
   def make_move(game, guess) do
     accept_move(game, guess, guess in game.used)
+    |> return_with_tally()
   end
 
   defp accept_move(game, _guess, _already_guessed = true) do
@@ -68,5 +70,7 @@ defmodule Hangman.Game do
 
   defp reveal_letter(game_letter, _guessed = true), do: game_letter
   defp reveal_letter(_game_letter, _not_guessed), do: "_"
+
+  defp return_with_tally(game), do: {game, tally(game)}
 
 end
