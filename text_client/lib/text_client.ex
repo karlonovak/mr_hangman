@@ -3,8 +3,10 @@ defmodule TextClient do
   alias TextClient.State
   alias TextClient.Player
 
+  @hangman_server :"hangman@knovak-ThinkPad-T480"
+
   def start_game() do
-    Hangman.new_game()
+    new_game()
     |> init_state()
     |> Player.play()
   end
@@ -14,6 +16,15 @@ defmodule TextClient do
       game: game,
       tally: Hangman.tally(game)
     }
+  end
+
+  defp new_game() do
+    :rpc.call(
+      @hangman_server,
+      Hangman,
+      :new_game,
+      []
+    )
   end
 
 

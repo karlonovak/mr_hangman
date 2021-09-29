@@ -4,12 +4,12 @@ defmodule TextClient.Player do
   alias TextClient.Summary
   alias TextClient.Input
 
-  def play(%State{game: %{state: :lost}}) do
+  def play(%State{tally: %{game_state: :lost}}) do
     IO.puts("Sorry, you lost...")
     exit :normal
   end
 
-  def play(%State{game: %{state: :won}}) do
+  def play(%State{tally: %{game_state: :won}}) do
     IO.puts("Congrats, you won!")
     exit :normal
   end
@@ -23,8 +23,8 @@ defmodule TextClient.Player do
   end
 
   defp make_move(state = %State{}) do
-    {new_game, new_tally} = Hangman.make_move(state.game, state.current_guess)
-    %State{state | game: new_game, tally: new_tally}
+    new_tally = Hangman.make_move(state.game, state.current_guess)
+    %State{state | tally: new_tally}
   end
 
 end
