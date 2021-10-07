@@ -1,4 +1,4 @@
-<%= inspect @tally %>
+<%= game_state(@tally.game_state) %>
 <p>
     Turns left: <%= @tally.turns_left %>
 </p>
@@ -6,7 +6,12 @@
     Letters: <%= Enum.join(@tally.letters," ") %>
 </p>
 
-<%= form_for(@conn, Routes.hangman_path(@conn, :make_move), [as: :make_move, method: :put], fn f -> %>
-<%= text_input(f, :guess) %>
-<%= submit("Make new move") %>
-<% end) %>
+
+<%= if @tally.game_state in [:won, :lost] do %>
+    <%= button("New game", to: Routes.hangman_path(@conn, :create_game)) %>
+<% else %>
+    <%= form_for(@conn, Routes.hangman_path(@conn, :make_move), [as: :make_move, method: :put], fn f -> %>
+    <%= text_input(f, :guess) %>
+    <%= submit("Make new move") %>
+    <% end) %>
+<% end %>

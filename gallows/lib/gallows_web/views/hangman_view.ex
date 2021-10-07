@@ -1,10 +1,32 @@
 defmodule GallowsWeb.HangmanView do
   use GallowsWeb, :view
 
-  def people(), do: [{"marin", 32}, {"karlo", 30}, {"ivo", 27}]
+  def game_state(:bad_guess) do
+    alert("warning", "Bad guess.")
+  end
 
-  def greeter(name, age) when age > 30, do: "hello " <> name
+  def game_state(:already_used) do
+    alert("warning", "You already used that letter, try another one...")
+  end
 
-  def greeter(name, age) when age <= 30, do: "hello young " <> name
+  def game_state(:won) do
+    alert("info", "Wow! You won!!!")
+  end
+
+  def game_state(:lost) do
+    alert("danger", "Sorry, you lost :(")
+  end
+
+  def game_state(_) do
+  end
+
+  defp alert(class, message) do
+    """
+    <div class="alert alert-#{class}">
+      #{message}
+    </div>
+  """
+  |> raw()
+  end
 
 end
