@@ -12,6 +12,7 @@ defmodule GallowsWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug :fetch_session
   end
 
   scope "/hangman", GallowsWeb do
@@ -22,10 +23,12 @@ defmodule GallowsWeb.Router do
     put "/", HangmanController, :make_move
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", GallowsWeb do
-  #   pipe_through :api
-  # end
+
+  scope "/api", GallowsWeb do
+    pipe_through :api
+
+    post "hangman", HangmanControllerRest, :create_game
+  end
 
   # Enables LiveDashboard only for development
   #
